@@ -27,7 +27,7 @@ def create_model(args):
 def create_dataset(args,is_training=True):
     
     if args.dataset in mydatasets:
-        return create_mydataset(args.dataset)
+        return create_mydataset(args.dataset,is_training=is_training)
     else:
         if is_training:
             return create_dataset(

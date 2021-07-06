@@ -42,7 +42,7 @@ def create_mydataset(dataset_name,is_training=True):
             test_dataset = datasets.CIFAR10(
                 root=cifar10_path,
                 train=False,
-                transform=test_form,
+                transform=test_transform,
                 download=True)
             return test_dataset
     else:
