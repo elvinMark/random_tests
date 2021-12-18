@@ -1,0 +1,2 @@
+../SAM_tests/trained_models/WRN-28-10_with_original_SAM/model_epochs=165_lr=0.1_momentum=0.9_weight_decay=0.0005_nbs=0.0_global_batch=64_local_batch=8.ckpt
+../SAM_tests/trained_models/WRN-28-10_with_original_SAM/model_epochs=165_lr=0.1_momentum=0.9_weight_decay=0.0005_nbs=0.0_global_batch=128_local_batch=16.ckpt

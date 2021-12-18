@@ -2,3 +2,10 @@ output/
 __pycache__/
 trained_models/
 wandb/
+test/
+data_eigenvals/
+data_landscape/
+cifar10_data/
+directions/
+log/
+results_csv/

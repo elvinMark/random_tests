@@ -22,16 +22,19 @@ python3 train.py ./ \
        --input-size 3 32 32 \
        --batch-size 32 \
        --momentum 0.9 \
-       --sched step \
+       --sched cosine \
        --lr 0.1 \
-       --decay-rate 0.2 \
-       --decay-epochs 50 \
-       --epochs 200 \
+       --epochs 10 \
        --output ./trained_models/ \
-       --experiment cifar10_resnet18_step_noiseless \
-       --log-wandb \
+       --experiment cifar10_resnet18_test \
        --project lr_noise_tests \
        --ngpus 1 \
+       --cooldown-epochs 0 \
        --recovery-interval 20 \
        --checkpoint-hist 2 \
        --log-interval 200 
+       # --log-wandb \
+       # --decay-epochs 50 \
+       # --decay-rate 0.2 \
+       # --seed 10 \
+       # --lr-noise 0. 10. \

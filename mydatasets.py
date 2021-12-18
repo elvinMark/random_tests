@@ -1,49 +1,57 @@
+import torchvision
 import torch
-import torch.nn
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-import os
 
-mydatasets = ["CIFAR10"]
+ROOT_PATH = "../data/"
 
+CIFAR10_MEAN = (0.4914, 0.4822, 0.4465)
+CIFAR10_STD = (0.2023, 0.1994, 0.2010)
 
-CIFAR10_MEAN = [0.4914, 0.4822, 0.4465]
-CIFAR10_STD = [0.2023, 0.1994, 0.2010]
+# Using the same mean and standard deviation as in CIFAR10
+CIFAR100_MEAN = (0.4914, 0.4822, 0.4465)
+CIFAR100_STD = (0.2023, 0.1994, 0.2010)
 
-def create_mydataset(dataset_name,is_training=True):
-    cifar10_path = os.getenv("CIFAR10_PATH")
-    if dataset_name == "CIFAR10":
-        if is_training:
-            train_transform = transforms.Compose([
-                transforms.RandomCrop(32, padding=4),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    CIFAR10_MEAN,
-                    CIFAR10_STD
-                )
-            ])
-            train_dataset = datasets.CIFAR10(
-                root=cifar10_path,
-                train=True, 
-                transform=train_transform,
-                download=True
-            )
-            return train_dataset
-        else:
-            test_transform = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    CIFAR10_MEAN,
-                    CIFAR10_STD
-                )
-            ])
+datasets_dict = {
+    "MNIST" : {
+        "loader" : torchvision.datasets.MNIST,
+        "transform" : torchvision.transforms.ToTensor(),
+        "test_transform" : torchvision.transforms.ToTensor()
+    },
+    "CIFAR10": {
+        "loader" : torchvision.datasets.CIFAR10,
+        "transform" : torchvision.transforms.Compose([
+            torchvision.transforms.RandomCrop(32,padding=4),
+            torchvision.transforms.RandomHorizontalFlip(),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(CIFAR10_MEAN,CIFAR10_STD)
+        ]),
+
+        "test_transform" : torchvision.transforms.Compose([
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(CIFAR10_MEAN,CIFAR10_STD)
+        ])
+    },
+    "CIFAR100": {
+        "loader" : torchvision.datasets.CIFAR100,
+        "transform" : torchvision.transforms.Compose([
+            torchvision.transforms.RandomCrop(32,padding=4),
+            torchvision.transforms.RandomHorizontalFlip(),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(CIFAR100_MEAN,CIFAR100_STD)
+        ]),
+
+        "test_transform" : torchvision.transforms.Compose([
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(CIFAR100_MEAN,CIFAR100_STD)
+        ])
+    }
+}
+
+def create_dataloaders(args):
+    train_ds = datasets_dict[args.dataset]["loader"](ROOT_PATH,train=True,download=True,transform=datasets_dict[args.dataset]["transform"])
+    test_ds = datasets_dict[args.dataset]["loader"](ROOT_PATH,train=False,download=True,transform=datasets_dict[args.dataset]["test_transform"])
+
+    train_dl = torch.utils.data.DataLoader(train_ds,batch_size=args.batch_size)
+    test_dl = torch.utils.data.DataLoader(test_ds,batch_size=args.batch_size)
         
-            test_dataset = datasets.CIFAR10(
-                root=cifar10_path,
-                train=False,
-                transform=test_transform,
-                download=True)
-            return test_dataset
-    else:
-        return None
+    return train_dl, test_dl
+        
