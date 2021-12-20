@@ -423,7 +423,26 @@ def ConvMixer(dim, depth, kernel_size=9, patch_size=7, n_classes=1000):
     )
 
 
+def create_mnist_conv_net():
+    return nn.Sequential(
+        nn.Conv2d(1, 32, kernel_size=3),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=2),
+        nn.Conv2d(32, 64, kernel_size=3),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=2),
+        nn.Flatten(),
+        nn.Dropout(),
+        nn.Linear(1600, 10),
+    )
+
+
 def create_model(args, pretrained=False):
+    if args.arch == "Conv":
+        if args.dataset == "MNIST":
+            return create_mnist_conv_net()
+        else:
+            return None
     if args.arch == "WRN":
         if args.dataset == "CIFAR10":
             return Wide_ResNet_CIFAR10(28, 10, 0, 10)

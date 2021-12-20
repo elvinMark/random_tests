@@ -193,14 +193,22 @@ def create_parser():
         "--dataset",
         type=str,
         default="CIFAR10",
-        choices=["CIFAR10", "TinyImagenet", "Imagenet"],
+        choices=["MNIST", "CIFAR10", "TinyImagenet", "Imagenet"],
         help="Dataset to be used",
     )
     parser.add_argument(
         "--arch",
         type=str,
         default="WRN",
-        choices=["WRN", "Resnet18", "default_Resnet18", "MLPMixer", "ConvMixer", "ViT"],
+        choices=[
+            "WRN",
+            "Resnet18",
+            "default_Resnet18",
+            "Conv",
+            "MLPMixer",
+            "ConvMixer",
+            "ViT",
+        ],
         help="Architecture to be used",
     )
     parser.add_argument(

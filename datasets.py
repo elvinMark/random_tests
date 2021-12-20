@@ -3,6 +3,8 @@ from torchvision import transforms, datasets
 import PIL
 from PIL import Image
 
+mnist_root = "./mnist_data"
+
 cifar10_traindir = "./cifar10_data/train"
 cifar10_valdir = "./cifar10_data/validation"
 
@@ -11,6 +13,50 @@ tiny_valdir = "../data/tiny-imagenet-200/val"
 
 imagenet_traindir = "/mnt/nfs/datasets/ILSVRC2012/train"
 imagenet_valdir = "/mnt/nfs/datasets/ILSVRC2012/val"
+
+
+def load_mnist(args):
+    train_transform = transforms.ToTensor()
+    test_transform = transforms.ToTensor()
+
+    train_dataset = datasets.MNIST(
+        mnist_root, train=True, download=True, transform=train_transform
+    )
+
+    test_dataset = datasets.MNIST(
+        mnist_root, train=False, download=True, transform=train_transform
+    )
+
+    if args.distributed:
+        train_sampler = torch.utils.data.distributed.DistributedSampler(
+            train_dataset, num_replicas=args.world_size, rank=args.rank
+        )
+        test_sampler = torch.utils.data.distributed.DistributedSampler(
+            test_dataset, num_replicas=args.world_size, rank=args.rank
+        )
+    else:
+        train_sampler = None
+        test_sampler = None
+
+    train_loader = torch.utils.data.DataLoader(
+        dataset=train_dataset,
+        batch_size=args.batch_size,
+        shuffle=(train_sampler is None),
+        num_workers=args.workers,
+        pin_memory=True,
+        sampler=train_sampler,
+    )
+
+    test_loader = torch.utils.data.DataLoader(
+        dataset=test_dataset,
+        batch_size=args.batch_size,
+        shuffle=False,
+        num_workers=args.workers,
+        pin_memory=True,
+        sampler=test_sampler,
+    )
+
+    return train_loader, test_loader, train_sampler, test_sampler
 
 
 def load_cifar10(args):
@@ -205,7 +251,9 @@ def load_imagenet(args):
 
 
 def create_dataset(args):
-    if args.dataset == "CIFAR10":
+    if args.dataset == "MNIST":
+        return load_mnist(args)
+    elif args.dataset == "CIFAR10":
         return load_cifar10(args)
     elif args.dataset == "TinyImagenet":
         return load_tinyimagenet(args)
