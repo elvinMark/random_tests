@@ -10,3 +10,4 @@ mnist_data/
 directions/
 log/
 results_csv/
+main.sh
