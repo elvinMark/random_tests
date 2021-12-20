@@ -17,7 +17,7 @@ export NUM_PROC=1
 # Single Runs Imagenet
 
 # Batch Size
-bs=2048
+bs=4096
 # Learning Rate
 # lr=0.4
 # Neighbour radius
@@ -28,7 +28,7 @@ optim=sam
 dataset=MNIST
 # architecture
 arch=Conv
-for lr in 0.2 1.6
+for lr in 0.1 0.2 0.4 0.8 1.6
 do
     for nbs in 0.0 0.01 0.02 0.04 0.08 0.16 0.32
     do

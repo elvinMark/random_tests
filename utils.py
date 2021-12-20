@@ -193,7 +193,7 @@ def create_parser():
         "--dataset",
         type=str,
         default="CIFAR10",
-        choices=["MNIST", "CIFAR10", "TinyImagenet", "Imagenet"],
+        choices=["MNIST", "CIFAR10", "TinyImagenet", "Imagenet", "ImagenetTar"],
         help="Dataset to be used",
     )
     parser.add_argument(
